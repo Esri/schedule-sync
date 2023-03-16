@@ -19,8 +19,8 @@ class Toolbox(object):
     def __init__(self):
         """Define the toolbox (the name of the toolbox is the name of the
         .pyt file)."""
-        self.label = "P6ScheduleSyncToolbox"
-        self.alias = "P6 Schedule Sync Toolbox"
+        self.label = "ScheduleSyncToolbox"
+        self.alias = "Schedule Sync Toolbox"
 
         # List of tool classes associated with this toolbox
         self.tools = [P6IntegTool, ExcelTool, CsvTool]
