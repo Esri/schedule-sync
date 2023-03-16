@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import configparser
 from datetime import datetime
 import os
 import pandas as pd
@@ -12,8 +11,8 @@ from arcgis import GeoAccessor
 from arcgis.gis import GIS
 import arcpy
 import xml.etree.ElementTree as ET
-from zeep import Client
-from zeep.wsse.username import UsernameToken
+# from zeep import Client
+# from zeep.wsse.username import UsernameToken
 
 
 class Toolbox(object):
@@ -35,22 +34,8 @@ class P6IntegTool(object):
         self.description = ""
         self.canRunInBackground = False
 
-
-    def getP6Server(self) -> str:
-        """Get the server URL from the config file.
-        The config file is assumed to be titled p6config.ini and to be located in the same directory as the pyt file.
-        A string containing the URL is returned."""
-        config = configparser.ConfigParser()
-        config.read(os.path.join(sys.path[0], 'p6config.ini'))
-        server = ""
-        server = config['SERVER']['p6ws_server']
-        return server
-
-
     def getParameterInfo(self):
         """Function defines the tool UI parameters.""" 
-        config = configparser.ConfigParser()
-        config.read(os.path.join(sys.path[0], 'p6config.ini'))
 
         params = []
 
@@ -59,12 +44,13 @@ class P6IntegTool(object):
             displayName="Input Type", 
             name="input_type", 
             datatype="GPString",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input")               
         param0.filter.type = "ValueList"
         param0.filter.list = ["XML", "EPPM"]
-        param0.value = config['GENERAL']['input']
-        param0.category = "Input Type"
+        # param0.category = "Input Type"
+        param0.value = "XML"
+        param0.enabled = False
         params.append(param0)
 
         param1 = arcpy.Parameter( 
@@ -74,9 +60,6 @@ class P6IntegTool(object):
             parameterType="Optional", 
             direction="Input")               
         param1.filter.list = ["xml"]
-        param1.value = ""
-        if config['GENERAL']['input']=='XML' and 'path' in config['XML']:
-            param1.value = config['XML']['path']
         param1.category = "P6 XML"
         params.append(param1)
 
@@ -84,34 +67,37 @@ class P6IntegTool(object):
             displayName="User Name", 
             name="user_name", 
             datatype="GPString",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input")
         param2.value = ""
         param2.value = "admin"
-        param2.category = "P6 Authentication"
+        # param2.category = "P6 Authentication"
+        param2.enabled = False
         params.append(param2)
         
         param3 = arcpy.Parameter( 
             displayName="Password", 
             name="password", 
             datatype="GPStringHidden",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input")                              
-        param3.value = ""
-        param3.value = "admin"
-        param3.category = "P6 Authentication"
+        # param3.value = ""
+        # param3.value = "admin"
+        # param3.category = "P6 Authentication"
+        param3.enabled = False
         params.append(param3)
         
         param4 = arcpy.Parameter( 
             displayName="P6 Host Name", 
             name="host_name", 
             datatype="GPString",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input")               
 
-        server = self.getP6Server()
-        param4.value = server 
-        param4.category = "P6 Authentication"
+        # server = self.getP6Server()
+        # param4.value = server 
+        # param4.category = "P6 Authentication"
+        param4.enabled = False
         params.append(param4)
         
         param5 = arcpy.Parameter( 
@@ -140,7 +126,7 @@ class P6IntegTool(object):
             displayName="Standard Fields", 
             name="standard_fields", 
             datatype="GPString",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input", 
             multiValue=True)               
         param7.filter.type = "ValueList"
@@ -216,7 +202,7 @@ class P6IntegTool(object):
             datatype="GPString",
             parameterType="Optional", 
             direction="Output")
-        param14.value = ""
+        # param14.value = ""
         param14.category = "Output"
         param14.enabled = False
         params.append(param14)
@@ -225,7 +211,7 @@ class P6IntegTool(object):
             displayName="Relationship Class Name", 
             name="rel_class", 
             datatype="GPString",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Output")
         param15.value = "my_rel_class"
         param15.category = "Output"
@@ -237,11 +223,11 @@ class P6IntegTool(object):
             displayName="Map", 
             name="pro_map", 
             datatype="GPMap", 
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input")
-        param16.value = ""
-        param16.category = "Output"
-        param16.enable = False
+        # param16.value = ""
+        # param16.category = "Output"
+        param16.enabled = False
         params.append(param16)
 
         param17 = arcpy.Parameter( 
@@ -313,26 +299,29 @@ class P6IntegTool(object):
         input_type = parameters[0].valueAsText
         xml_file_path = parameters[1].valueAsText
 
-        if input_type == "XML":
-            # All Subject Areas supported for XML must be included in this list
-            parameters[5].filter.list = ["Project", "WBS", "Activity"]
-            parameters[1].enabled = True
+        # if input_type == "XML":
+        #     # All Subject Areas supported for XML must be included in this list
+        #     parameters[5].filter.list = ["Project", "WBS", "Activity"]
+        #     parameters[1].enabled = True
 
-            parameters[2].enabled = False
-            parameters[3].enabled = False
-            parameters[4].enabled = False
+        #     parameters[2].enabled = False
+        #     parameters[3].enabled = False
+        #     parameters[4].enabled = False
 
-        else:
-            # All subject areas supported for EPPM must be include in this list
-            parameters[5].filter.list = ["Project", "WBS", "Activity", "Activity Step"]
-            parameters[1].enabled = False
-            parameters[2].enabled = True
-            parameters[3].enabled = True
-            parameters[4].enabled = True
+        # else:
+        #     # All subject areas supported for EPPM must be include in this list
+        #     parameters[5].filter.list = ["Project", "WBS", "Activity", "Activity Step"]
+        #     parameters[1].enabled = False
+        #     parameters[2].enabled = True
+        #     parameters[3].enabled = True
+        #     parameters[4].enabled = True
             
-        username = parameters[2].value
-        password = parameters[3].value
-        hostname = parameters[4].value
+        # username = parameters[2].value
+        # password = parameters[3].value
+        # hostname = parameters[4].value
+        username = None
+        password = None
+        hostname = None
         subjectArea = parameters[5].value
 
         stdFlds = self.getStandardFields(parameters[5].value)
@@ -343,7 +332,7 @@ class P6IntegTool(object):
             parameters[6].enabled = False
         else:
             parameters[6].enabled = True
-            if input_type == "XML":
+            if xml_file_path:
                 projs, projoids = self.readProjects(username, password, hostname, input_type, xml_file_path)
                 parameters[6].filter.list =  projs
                 udfFlds = self.getUDFFields(username, password, hostname, parameters[5].value, input_type, xml_file_path)
@@ -373,35 +362,24 @@ class P6IntegTool(object):
                 parameters[10].filter.list = p6LinkFlds
                 parameters[17].filter.list = p6LinkFlds
                 parameters[18].filter.list = p6LinkFlds
-            else:
-                if username and password and hostname and parameters[5].value:
-                    projs, projoids = self.readProjects(username, password, hostname, input_type, xml_file_path)
-                    parameters[6].filter.list =  projs
-                    udfFlds = self.getUDFFields(username, password, hostname, parameters[5].value, input_type, xml_file_path)
-                    parameters[8].filter.list = udfFlds 
-                    p6LinkFlds = stdFlds + udfFlds            
-                    parameters[10].filter.list = p6LinkFlds
-                    parameters[17].filter.list = p6LinkFlds
-                    parameters[18].filter.list = p6LinkFlds
 
-        if input_type == "XML":
-            if parameters[5].value:
-                if parameters[5].value == "Activity":
-                    parameters[9].enabled = True
-            else:
-                parameters[9].enabled = False
+        if parameters[5].value:
+            if parameters[5].value == "Activity":
+                parameters[9].enabled = True
         else:
-            if parameters[5].value:
-                if parameters[5].value == "Activity":
-                    parameters[9].enabled = True
-            else:
-                parameters[9].enabled = False
+            parameters[9].enabled = False
+        # else:
+        #     if parameters[5].value:
+        #         if parameters[5].value == "Activity":
+        #             parameters[9].enabled = True
+        #     else:
+        #         parameters[9].enabled = False
 
-        if parameters[13].value:
-            if parameters[13].value == "Join Data - One to One":
-                parameters[15].enabled = False
-            else:
-                parameters[15].enabled = True
+        # if parameters[13].value:
+        #     if parameters[13].value == "Join Data - One to One":
+        #         parameters[15].enabled = False
+            # else:
+            #     parameters[15].enabled = True
 
         if parameters[5].value != "Activity":
             parameters[9].enabled = False
@@ -415,15 +393,18 @@ class P6IntegTool(object):
         """Modify the messages created by internal validation for each tool
         parameter.  This method is called after internal validation."""
 
-        username = parameters[2].value
-        if not username:
-            parameters[2].setErrorMessage("Please provide a username.")
-        password = parameters[3].value
-        if not password:
-            parameters[3].setErrorMessage("Please provide a password.")
-        hostname = parameters[4].value
-        if not hostname:
-            parameters[4].setErrorMessage("Please provide a host URL.")
+        xml_file_path = parameters[1].valueAsText
+        if not xml_file_path:
+            parameters[1].setErrorMessage("Please provide an XML path.")
+        # username = parameters[2].value
+        # if not username:
+        #     parameters[2].setErrorMessage("Please provide a username.")
+        # password = parameters[3].value
+        # if not password:
+        #     parameters[3].setErrorMessage("Please provide a password.")
+        # hostname = parameters[4].value
+        # if not hostname:
+        #     parameters[4].setErrorMessage("Please provide a host URL.")
     
         return
 
@@ -449,7 +430,6 @@ class P6IntegTool(object):
             fc_source = parameters[11].valueAsText
             fc_name = str(Path(fc_source).name)
             temp_gdb = "sync_{}.gdb".format(fc_name)
-            temp_gdb = cleanName(temp_gdb)
 
             arcpy.SetProgressorPosition()
             arcpy.SetProgressorLabel("Creating temp gdb...")
@@ -458,7 +438,7 @@ class P6IntegTool(object):
             arcpy.env.workspace = out_gdb_path
 
             p6_table = "p6table_{}".format(fc_name)
-            p6_table = cleanName(p6_table)
+            # p6_table = cleanName(p6_table)
             table_path = os.path.join(out_gdb_path, p6_table)
 
             subjectArea = parameters[5].valueAsText
@@ -499,16 +479,9 @@ class P6IntegTool(object):
             elif parameters[13].value == "Relationship Class - Many to One":
                 join_status = False
 
-
-            try:
-                config = configparser.ConfigParser()
-                config.read(os.path.join(sys.path[0], 'p6config.ini'))
-            except:
-                arcpy.AddMessage("No config file found at {}".format(os.path.join(sys.path[0], 'p6config.ini')))
-
             arcpy.SetProgressorPosition()
             arcpy.SetProgressorLabel("Copying feature class to GDB...")
-            arcpy.FeatureClassToFeatureClass_conversion(in_features=fc_name,
+            arcpy.FeatureClassToFeatureClass_conversion(in_features=fc_source,
                                                         out_path=out_gdb_path,
                                                         out_name=fc_name)
             
@@ -634,7 +607,7 @@ class P6IntegTool(object):
             arcpy.AddMessage("Sync to ArcGIS Organization complete.")
             
             validatePublishedTable(
-                n_table_rows_source=len(GeoAccessor.from_table(table_path)), 
+                n_table_rows_source=int(arcpy.management.GetCount(table_path)[0]), 
                 published_item=published_item)
 
             # Validate published feature service data
@@ -739,96 +712,96 @@ class P6IntegTool(object):
                     allRows.append(row)
             return [lstUniqSubjectAreaCodeNames, allRows]
 
-        if project == "*": # Projects
-            filter = ""
-            flds = ["ProjectCodeTypeName", "ProjectCodeValue", "ProjectObjectId"]
-        else:
-            # get project ID from within parentheses at end of string
-            #projId = project[project.find('(') + 1:project.find(')')]
-            projs, projoids = self.readProjects(username, password, hostname, input_type, xml_file_path)            
-            projId = projoids[projectIndex]
-            filter = "ProjectObjectId='" + projId + "'"            
-            flds = ["ActivityCodeTypeName", "ActivityCodeValue", "ActivityObjectId", "ProjectObjectId"]
+        # if project == "*": # Projects
+        #     filter = ""
+        #     flds = ["ProjectCodeTypeName", "ProjectCodeValue", "ProjectObjectId"]
+        # else:
+        #     # get project ID from within parentheses at end of string
+        #     #projId = project[project.find('(') + 1:project.find(')')]
+        #     projs, projoids = self.readProjects(username, password, hostname, input_type, xml_file_path)            
+        #     projId = projoids[projectIndex]
+        #     filter = "ProjectObjectId='" + projId + "'"            
+        #     flds = ["ActivityCodeTypeName", "ActivityCodeValue", "ActivityObjectId", "ProjectObjectId"]
 
-        url = ""
-        if subjectArea == "Project":
-            url = hostname + "/services/ProjectCodeAssignmentService?wsdl"                  
-        elif subjectArea == "Activity":
-            url = hostname + "/services/ActivityCodeAssignmentService?wsdl"
+        # url = ""
+        # if subjectArea == "Project":
+        #     url = hostname + "/services/ProjectCodeAssignmentService?wsdl"                  
+        # elif subjectArea == "Activity":
+        #     url = hostname + "/services/ActivityCodeAssignmentService?wsdl"
 
-        client = Client(url, wsse=UsernameToken(username, password))  
+        # # client = Client(url, wsse=UsernameToken(username, password))  
 
-        if subjectArea == "Project":            
-            resp = client.service.ReadProjectCodeAssignments(flds,Filter=filter) 
-            # get all projectObjectIDs
-            OIDs = [i["ProjectObjectId"] for i in resp if i["ProjectObjectId"] ]
-            # get all possible code field names
-            subjectAreaCodeNames = [i["ProjectCodeTypeName"] for i in resp if i["ProjectCodeTypeName"] ]
+        # if subjectArea == "Project":            
+        #     resp = client.service.ReadProjectCodeAssignments(flds,Filter=filter) 
+        #     # get all projectObjectIDs
+        #     OIDs = [i["ProjectObjectId"] for i in resp if i["ProjectObjectId"] ]
+        #     # get all possible code field names
+        #     subjectAreaCodeNames = [i["ProjectCodeTypeName"] for i in resp if i["ProjectCodeTypeName"] ]
 
-        elif subjectArea == "Activity":            
-            resp = client.service.ReadActivityCodeAssignments(flds,Filter=filter)    
-            # get all activityObjectIDs
-            OIDs = [i["ActivityObjectId"] for i in resp if i["ActivityObjectId"] ]
-            # get all possible code field names
-            subjectAreaCodeNames = [i["ActivityCodeTypeName"] for i in resp if i["ActivityCodeTypeName"] ]
+        # elif subjectArea == "Activity":            
+        #     resp = client.service.ReadActivityCodeAssignments(flds,Filter=filter)    
+        #     # get all activityObjectIDs
+        #     OIDs = [i["ActivityObjectId"] for i in resp if i["ActivityObjectId"] ]
+        #     # get all possible code field names
+        #     subjectAreaCodeNames = [i["ActivityCodeTypeName"] for i in resp if i["ActivityCodeTypeName"] ]
 
-        # get unique values
-        uniqOIDs = set(OIDs)
-        # arcpy.AddMessage(uniqOIDs)
+        # # get unique values
+        # uniqOIDs = set(OIDs)
+        # # arcpy.AddMessage(uniqOIDs)
         
-        # get unique values
-        uniqSubjectAreaCodeNames = set(subjectAreaCodeNames)
-        lstUniqSubjectAreaCodeNames = list(uniqSubjectAreaCodeNames)
-        if subjectArea == "Project":
-            lstUniqSubjectAreaCodeNames.insert(0, "ProjectObjectId")
-        elif subjectArea == "Activity":
-            lstUniqSubjectAreaCodeNames.insert(0, "ActivityObjectId")
-        # arcpy.AddMessage(lstUniqSubjectAreaCodeNames)  
+        # # get unique values
+        # uniqSubjectAreaCodeNames = set(subjectAreaCodeNames)
+        # lstUniqSubjectAreaCodeNames = list(uniqSubjectAreaCodeNames)
+        # if subjectArea == "Project":
+        #     lstUniqSubjectAreaCodeNames.insert(0, "ProjectObjectId")
+        # elif subjectArea == "Activity":
+        #     lstUniqSubjectAreaCodeNames.insert(0, "ActivityObjectId")
+        # # arcpy.AddMessage(lstUniqSubjectAreaCodeNames)  
            
-        # a dictionary whose value is another dictionary - stores all proj and their data
-        oidDataDict = {}
+        # # a dictionary whose value is another dictionary - stores all proj and their data
+        # oidDataDict = {}
         
-        for item in resp:
-            if subjectArea == "Project":
-                oid = item["ProjectObjectId"]
-            elif subjectArea == "Activity":
-                oid = item["ActivityObjectId"]
+        # for item in resp:
+        #     if subjectArea == "Project":
+        #         oid = item["ProjectObjectId"]
+        #     elif subjectArea == "Activity":
+        #         oid = item["ActivityObjectId"]
             
-            # if OID already exists , get the corresponding dictionary
-            if oid in oidDataDict.keys():
-                oidFldsDict = oidDataDict[oid]
-                # arcpy.AddMessage("in keys")
-            else:
-                oidFldsDict = {}
+        #     # if OID already exists , get the corresponding dictionary
+        #     if oid in oidDataDict.keys():
+        #         oidFldsDict = oidDataDict[oid]
+        #         # arcpy.AddMessage("in keys")
+        #     else:
+        #         oidFldsDict = {}
                            
-            if subjectArea == "Project":                
-                oidFldsDict[item["ProjectCodeTypeName"]] = item["ProjectCodeValue"]                
-            elif subjectArea == "Activity":               
-                oidFldsDict[item["ActivityCodeTypeName"]] = item["ActivityCodeValue"]
+        #     if subjectArea == "Project":                
+        #         oidFldsDict[item["ProjectCodeTypeName"]] = item["ProjectCodeValue"]                
+        #     elif subjectArea == "Activity":               
+        #         oidFldsDict[item["ActivityCodeTypeName"]] = item["ActivityCodeValue"]
             
-            oidDataDict[oid] = oidFldsDict
+        #     oidDataDict[oid] = oidFldsDict
             
-        # arcpy.AddMessage(oidDataDict)
+        # # arcpy.AddMessage(oidDataDict)
 
-        # list of lists
-        allRows = []
+        # # list of lists
+        # allRows = []
         
-        # iterate over proj dictionary and copy value in respective posistion in list
-        # if proj does not have a particular field , add None as placeholder.
-        # this list will be added as row in table
-        for oid, data in oidDataDict.items():
-            row = [oid]
-            for fld in lstUniqSubjectAreaCodeNames:
-                # ignore if ProjectObjectId or ActivityObjectId as oid already added
-                if not fld == "ProjectObjectId" and not fld == "ActivityObjectId":                    
-                    # does the code field exist in this particular project
-                    if fld in data.keys():
-                        row.append(data[fld])
-                    else:
-                        row.append(None)
-            allRows.append(row)
-        # arcpy.AddMessage(allRows)
-        return [lstUniqSubjectAreaCodeNames, allRows]
+        # # iterate over proj dictionary and copy value in respective posistion in list
+        # # if proj does not have a particular field , add None as placeholder.
+        # # this list will be added as row in table
+        # for oid, data in oidDataDict.items():
+        #     row = [oid]
+        #     for fld in lstUniqSubjectAreaCodeNames:
+        #         # ignore if ProjectObjectId or ActivityObjectId as oid already added
+        #         if not fld == "ProjectObjectId" and not fld == "ActivityObjectId":                    
+        #             # does the code field exist in this particular project
+        #             if fld in data.keys():
+        #                 row.append(data[fld])
+        #             else:
+        #                 row.append(None)
+        #     allRows.append(row)
+        # # arcpy.AddMessage(allRows)
+        # return [lstUniqSubjectAreaCodeNames, allRows]
         
         
     def createPopulateCodeFldsTable(self, path:str, tableName:str, data:list): 
@@ -1155,119 +1128,119 @@ class P6IntegTool(object):
             # udfRowsPerSubjectArea:
             # [{126498: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126499: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126500: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126501: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126502: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126503: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126504: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126505: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126506: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126507: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126508: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126509: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126510: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126511: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126512: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126513: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126514: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126515: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126516: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126517: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126518: [{'GIS_ID': 'A2'}, {'ProjectObjectId': 4886}]}, {126519: [{'GIS_ID': 'Int-H1'}, {'ProjectObjectId': 4886}]}, {126520: [{'GIS_ID': 'Int-H1'}, {'ProjectObjectId': 4886}]}, {126521: [{'GIS_ID': 'Int-H1'}, {'ProjectObjectId': 4886}]}, {126522: [{'GIS_ID': 'Int-H1'}, {'ProjectObjectId': 4886}]}, {126523: [{'GIS_ID': 'Int-H1'}, {'ProjectObjectId': 4886}]}, {126524: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126525: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126526: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126527: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126528: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}, {126529: [{'GIS_ID': 'A1'}, {'ProjectObjectId': 4886}]}]
 
-        url = hostname + "/services/UDFValueService?wsdl"
-        client = Client(url, wsse=UsernameToken(username, password))   
+        # url = hostname + "/services/UDFValueService?wsdl"
+        # client = Client(url, wsse=UsernameToken(username, password))   
         
-        # some of the UDF fields have single quotes about them - remove them
-        flds = reqFlds.split(";") 
-        fldsWithoutQuotes = []
-        for fld in flds:
-            if fld.startswith("'") == True and fld.endswith("'") == True:
-               fldsWithoutQuotes.append(fld[1:-1])
-            else:
-               fldsWithoutQuotes.append(fld)
+        # # some of the UDF fields have single quotes about them - remove them
+        # flds = reqFlds.split(";") 
+        # fldsWithoutQuotes = []
+        # for fld in flds:
+        #     if fld.startswith("'") == True and fld.endswith("'") == True:
+        #        fldsWithoutQuotes.append(fld[1:-1])
+        #     else:
+        #        fldsWithoutQuotes.append(fld)
         
-        # need this additional filter - since fieldname is stored in UDFTypeTitle       
-        filterUDFTypeTitle = ""
-        for fldWithoutQuotes in fldsWithoutQuotes:
-            filterUDFTypeTitle += "UDFTypeTitle='" + fldWithoutQuotes + "' OR "
-        filterUDFTypeTitle = filterUDFTypeTitle[:-4]
-        filterUDFTypeTitle = "(" + filterUDFTypeTitle + ")"
-        #arcpy.AddMessage(filterUDFTypeTitle)
+        # # need this additional filter - since fieldname is stored in UDFTypeTitle       
+        # filterUDFTypeTitle = ""
+        # for fldWithoutQuotes in fldsWithoutQuotes:
+        #     filterUDFTypeTitle += "UDFTypeTitle='" + fldWithoutQuotes + "' OR "
+        # filterUDFTypeTitle = filterUDFTypeTitle[:-4]
+        # filterUDFTypeTitle = "(" + filterUDFTypeTitle + ")"
+        # #arcpy.AddMessage(filterUDFTypeTitle)
         
-        # specify metadats fields needed
-        udfMetadataflds = ["UDFTypeTitle", "UDFTypeSubjectArea","ProjectObjectId", "Text" , "Double", "Integer", \
-                            "Cost", "Indicator","StartDate", "FinishDate", "ForeignObjectId"]  # fails on "Code"
+        # # specify metadats fields needed
+        # udfMetadataflds = ["UDFTypeTitle", "UDFTypeSubjectArea","ProjectObjectId", "Text" , "Double", "Integer", \
+        #                     "Cost", "Indicator","StartDate", "FinishDate", "ForeignObjectId"]  # fails on "Code"
                    
-        #arcpy.AddMessage(udfMetadataflds)
+        # #arcpy.AddMessage(udfMetadataflds)
         
-        if project == "*":
-            filter = "UDFTypeSubjectArea='" + subjectArea + "' AND " + filterUDFTypeTitle  
-        else:
-            # get project ID from within parentheses at end of string
-            #projId = project[project.find('(') + 1:project.find(')')]
-            projs, projoids = self.readProjects(username, password, hostname, input_type, xml_file_path)
-            projId = projoids[projectIndex]
-            filter = "ProjectObjectId='" + projId + "' AND UDFTypeSubjectArea='" + subjectArea + "' AND " + filterUDFTypeTitle  
+        # if project == "*":
+        #     filter = "UDFTypeSubjectArea='" + subjectArea + "' AND " + filterUDFTypeTitle  
+        # else:
+        #     # get project ID from within parentheses at end of string
+        #     #projId = project[project.find('(') + 1:project.find(')')]
+        #     projs, projoids = self.readProjects(username, password, hostname, input_type, xml_file_path)
+        #     projId = projoids[projectIndex]
+        #     filter = "ProjectObjectId='" + projId + "' AND UDFTypeSubjectArea='" + subjectArea + "' AND " + filterUDFTypeTitle  
 
-        resp = client.service.ReadUDFValues(udfMetadataflds,Filter=filter)
+        # resp = client.service.ReadUDFValues(udfMetadataflds,Filter=filter)
       
-        udfRowsPerSubjectArea = []    # list of Objects  
-        udfTableFields = []  # list of Objects 
-        # explicitly add ForeignObjectId and ProjectObjectId fields to list of fields to be created in table
-        udfTableFields.append({"FieldName": "ForeignObjectId", "DataType": "Text" })
-        udfTableFields.append({"FieldName": "ProjectObjectId", "DataType": "Text" })
+        # udfRowsPerSubjectArea = []    # list of Objects  
+        # udfTableFields = []  # list of Objects 
+        # # explicitly add ForeignObjectId and ProjectObjectId fields to list of fields to be created in table
+        # udfTableFields.append({"FieldName": "ForeignObjectId", "DataType": "Text" })
+        # udfTableFields.append({"FieldName": "ProjectObjectId", "DataType": "Text" })
                                  
-        for item in resp:
-            #arcpy.AddMessage("***" + str(item))           
-            projectData = {}
+        # for item in resp:
+        #     #arcpy.AddMessage("***" + str(item))           
+        #     projectData = {}
             
-            # get the fields that have to be added to UDF table
-            for fldWithoutQuotes in fldsWithoutQuotes:
-                if item["UDFTypeTitle"] == fldWithoutQuotes:                    
-                    # check if field already exists in list of objects
-                    #arcpy.AddMessage("check " + fldWithoutQuotes)
-                    fldExists = [tableFld for tableFld in udfTableFields if tableFld["FieldName"] == item["UDFTypeTitle"]]
+        #     # get the fields that have to be added to UDF table
+        #     for fldWithoutQuotes in fldsWithoutQuotes:
+        #         if item["UDFTypeTitle"] == fldWithoutQuotes:                    
+        #             # check if field already exists in list of objects
+        #             #arcpy.AddMessage("check " + fldWithoutQuotes)
+        #             fldExists = [tableFld for tableFld in udfTableFields if tableFld["FieldName"] == item["UDFTypeTitle"]]
                     
-                    #arcpy.AddMessage(fldExists)
-                    #arcpy.AddMessage(len(fldExists))
-                    #arcpy.AddMessage(item["UDFTypeDataType"] + "," + item["UDFTypeTitle"])
-                    if len(fldExists) == 0:
-                        if item["UDFTypeDataType"] == "Text":                        
-                            datatype = "Text"
-                        elif item["UDFTypeDataType"] == "Double":                        
-                            datatype = "Double"
-                        elif item["UDFTypeDataType"] == "Integer":                        
-                            datatype = "Integer"
-                        elif item["UDFTypeDataType"] == "Start Date":                                           
-                            datatype = "Date"
-                        elif item["UDFTypeDataType"] == "Finish Date":                        
-                            datatype = "Date"
-                        elif item["UDFTypeDataType"] == "Cost":                        
-                            datatype = "Double"
-                        elif item["UDFTypeDataType"] == "Indicator":                        
-                            datatype = "Text"
-                        elif item["UDFTypeDataType"] == "Code":                        
-                            datatype = "Text"
+        #             #arcpy.AddMessage(fldExists)
+        #             #arcpy.AddMessage(len(fldExists))
+        #             #arcpy.AddMessage(item["UDFTypeDataType"] + "," + item["UDFTypeTitle"])
+        #             if len(fldExists) == 0:
+        #                 if item["UDFTypeDataType"] == "Text":                        
+        #                     datatype = "Text"
+        #                 elif item["UDFTypeDataType"] == "Double":                        
+        #                     datatype = "Double"
+        #                 elif item["UDFTypeDataType"] == "Integer":                        
+        #                     datatype = "Integer"
+        #                 elif item["UDFTypeDataType"] == "Start Date":                                           
+        #                     datatype = "Date"
+        #                 elif item["UDFTypeDataType"] == "Finish Date":                        
+        #                     datatype = "Date"
+        #                 elif item["UDFTypeDataType"] == "Cost":                        
+        #                     datatype = "Double"
+        #                 elif item["UDFTypeDataType"] == "Indicator":                        
+        #                     datatype = "Text"
+        #                 elif item["UDFTypeDataType"] == "Code":                        
+        #                     datatype = "Text"
                         
-                        udfTableFields.append({"FieldName":item["UDFTypeTitle"], "DataType": datatype })
-                        #arcpy.AddMessage(str(udfTableFields))
+        #                 udfTableFields.append({"FieldName":item["UDFTypeTitle"], "DataType": datatype })
+        #                 #arcpy.AddMessage(str(udfTableFields))
 
-            # data response contains several field objects per project ID/ForeignObjectId. 
-            # So create a list of rows - each row corresponds to a projectID/ForeignObjectId
-            # and has fields for that specific project            
+        #     # data response contains several field objects per project ID/ForeignObjectId. 
+        #     # So create a list of rows - each row corresponds to a projectID/ForeignObjectId
+        #     # and has fields for that specific project            
             
-            # projectData is of the format {projID: [{field1: value1}, {field2: value2},{field2: value2}]}
-            # udfRowsPerSubjectArea is of the format [projectData,projectData,projectData]
+        #     # projectData is of the format {projID: [{field1: value1}, {field2: value2},{field2: value2}]}
+        #     # udfRowsPerSubjectArea is of the format [projectData,projectData,projectData]
                        
-            if item["UDFTypeDataType"] == "Start Date":                                           
-                val = item["StartDate"]
-            elif item["UDFTypeDataType"] == "Finish Date":                        
-                val = item["FinishDate"]
-            else:
-                val = item[item["UDFTypeDataType"]]    
-            udfTitle = item["UDFTypeTitle"]   
+        #     if item["UDFTypeDataType"] == "Start Date":                                           
+        #         val = item["StartDate"]
+        #     elif item["UDFTypeDataType"] == "Finish Date":                        
+        #         val = item["FinishDate"]
+        #     else:
+        #         val = item[item["UDFTypeDataType"]]    
+        #     udfTitle = item["UDFTypeTitle"]   
             
-            #arcpy.AddMessage("*" + str(val) + "," + udfTitle + ',' + str(item["ForeignObjectId"]) + "," + str(item["ProjectObjectId"]))
+        #     #arcpy.AddMessage("*" + str(val) + "," + udfTitle + ',' + str(item["ForeignObjectId"]) + "," + str(item["ProjectObjectId"]))
 
-            # check if dictionary key is same as ForeignObjectId value
-            projRowExists = [projRow for projRow in udfRowsPerSubjectArea if list(projRow)[0] == item["ForeignObjectId"]]
+        #     # check if dictionary key is same as ForeignObjectId value
+        #     projRowExists = [projRow for projRow in udfRowsPerSubjectArea if list(projRow)[0] == item["ForeignObjectId"]]
             
-            # if projectRow already exists , append to it
-            # else create a new projectRow
-            # arcpy.AddMessage("projRowExists " + str(projRowExists))
-            if len(projRowExists) == 0:                                
-                projectData[item["ForeignObjectId"]] = [{udfTitle: val}, {"ProjectObjectId": item["ProjectObjectId"]}]                               
-                udfRowsPerSubjectArea.append(projectData)                 
-            else:                
-                projDict = projRowExists[0]
-                # get the list corresponding to ForeignObjectId - dict.values() returns view
-                # https://docs.python.org/3/library/stdtypes.html#dictionary-view-objects
-                projectData = list(projDict.values())[0]   
-                projectData.append({udfTitle: val})
-                #udfRowsPerSubjectArea.append(str(projectData))                                           
+        #     # if projectRow already exists , append to it
+        #     # else create a new projectRow
+        #     # arcpy.AddMessage("projRowExists " + str(projRowExists))
+        #     if len(projRowExists) == 0:                                
+        #         projectData[item["ForeignObjectId"]] = [{udfTitle: val}, {"ProjectObjectId": item["ProjectObjectId"]}]                               
+        #         udfRowsPerSubjectArea.append(projectData)                 
+        #     else:                
+        #         projDict = projRowExists[0]
+        #         # get the list corresponding to ForeignObjectId - dict.values() returns view
+        #         # https://docs.python.org/3/library/stdtypes.html#dictionary-view-objects
+        #         projectData = list(projDict.values())[0]   
+        #         projectData.append({udfTitle: val})
+        #         #udfRowsPerSubjectArea.append(str(projectData))                                           
 
-        return [udfTableFields, udfRowsPerSubjectArea]
+        # return [udfTableFields, udfRowsPerSubjectArea]
 
 
     def retrieveStandardData(self, username:str, password:str, hostname:str, subjectArea:str, project:str, projectIndex:int, reqFlds:str, input_type:str, xml_file_path:str) -> list:
@@ -1354,40 +1327,38 @@ class P6IntegTool(object):
                             row[field_name] = field_value  # Add value to row dictionary
                     resp.append(row)
                         
-        else:
-            # Get standard data using EPPM
+        # else:
+        #     # Get standard data using EPPM
 
-            # all fields are retrived from the client call. However , only those fields that are specifically requested 
-            # have values retrieved. All Other fields have a value of 'None'        
-            url = ""
-            if subjectArea == "Project":
-                url = hostname + "/services/ProjectService?wsdl"
-            elif subjectArea == "WBS":
-                url = hostname + "/services/WBSService?wsdl"
-            elif subjectArea == "Activity":
-                url = hostname + "/services/ActivityService?wsdl"
-            # TODO: Add ActivityStep service call here
-            elif subjectArea == "Activity Step":
-                url = hostname + "/services/ActivityStepService?wsdl"
-            client = Client(url, wsse=UsernameToken(username, password))
+        #     # all fields are retrived from the client call. However , only those fields that are specifically requested 
+        #     # have values retrieved. All Other fields have a value of 'None'        
+        #     url = ""
+        #     if subjectArea == "Project":
+        #         url = hostname + "/services/ProjectService?wsdl"
+        #     elif subjectArea == "WBS":
+        #         url = hostname + "/services/WBSService?wsdl"
+        #     elif subjectArea == "Activity":
+        #         url = hostname + "/services/ActivityService?wsdl"
+        #     elif subjectArea == "Activity Step":
+        #         url = hostname + "/services/ActivityStepService?wsdl"
+        #     client = Client(url, wsse=UsernameToken(username, password))
                     
-            if subjectArea  == "Project":
-                resp = client.service.ReadProjects(flds, Filter=filter)
-            elif subjectArea == "WBS":
-                resp = client.service.ReadWBS(flds, Filter=filter)            
-            elif subjectArea == "Activity":
-                resp = client.service.ReadActivities(flds,Filter=filter)
-            # TODO: Add ActivityStep service call here
-            elif subjectArea == "Activity Step":
-                resp = client.service.ReadActivitySteps(flds,Filter=filter)
+        #     if subjectArea  == "Project":
+        #         resp = client.service.ReadProjects(flds, Filter=filter)
+        #     elif subjectArea == "WBS":
+        #         resp = client.service.ReadWBS(flds, Filter=filter)            
+        #     elif subjectArea == "Activity":
+        #         resp = client.service.ReadActivities(flds,Filter=filter)
+        #     elif subjectArea == "Activity Step":
+        #         resp = client.service.ReadActivitySteps(flds,Filter=filter)
 
-            # Response is a list of dictionaries
-            # each dictionary represents a row
-            # each row has all columns 
-            # reqData = []
-            #arcpy.AddMessage("***" + str(resp))        
-            #get dictionary of fldname and datatype
-            # fldsDataTypes = self.getStandardFieldsDataTypes(subjectArea)
+        #     # Response is a list of dictionaries
+        #     # each dictionary represents a row
+        #     # each row has all columns 
+        #     # reqData = []
+        #     #arcpy.AddMessage("***" + str(resp))        
+        #     #get dictionary of fldname and datatype
+        #     # fldsDataTypes = self.getStandardFieldsDataTypes(subjectArea)
 
         # Loop through each dictionary in resp list from XML or EPPM
         while "ObjectId" in flds:
@@ -1466,35 +1437,35 @@ class P6IntegTool(object):
                     baselineProjs[str(proj_ObjectId)] = proj_Name+ "(" + str(proj_ObjectId) + ")"
                     # store baseline proj ID and master Proj ID
                     baselineOIDs[str(proj_ObjectId)] = str(proj_OriginalProjectObjectId)
-        else:
-            url = hostname + "/services/ProjectService?wsdl"
-            client = Client(url, wsse=UsernameToken(username, password))
+        # else:
+        #     url = hostname + "/services/ProjectService?wsdl"
+        #     client = Client(url, wsse=UsernameToken(username, password))
             
-            # return a list of projects with baseline projects indented under master project
+        #     # return a list of projects with baseline projects indented under master project
             
-            # Master projects
-            resp = client.service.ReadProjects("Name")        
-            projs = {}
-            for item in resp:            
-                projs[str(item["ObjectId"])] = item["Name"] + "(" + str(item["ObjectId"]) + ")"
+        #     # Master projects
+        #     resp = client.service.ReadProjects("Name")        
+        #     projs = {}
+        #     for item in resp:            
+        #         projs[str(item["ObjectId"])] = item["Name"] + "(" + str(item["ObjectId"]) + ")"
             
-            #arcpy.AddMessage(projs.keys())
+        #     #arcpy.AddMessage(projs.keys())
             
-            # baseline projects 
-            url = hostname + "/services/BaselineProjectService?wsdl"
-            client = Client(url, wsse=UsernameToken(username, password))
+        #     # baseline projects 
+        #     url = hostname + "/services/BaselineProjectService?wsdl"
+        #     client = Client(url, wsse=UsernameToken(username, password))
             
-            baselnResp = client.service.ReadBaselineProjects(Field=["Name", "OriginalProjectObjectId", "ObjectId"])    
-            baselineProjs = {}
-            baselineOIDs = {}
-            for item in baselnResp:            
-                #baselineProjs[str(item["OriginalProjectObjectId"])] = item["Name"]+ "(" + str(item["ObjectId"]) + ")"
-                # store baseline proj name with OID
-                baselineProjs[str(item["ObjectId"])] = item["Name"]+ "(" + str(item["ObjectId"]) + ")"
-                # store baseline proj ID and master Proj ID
-                baselineOIDs[str(item["ObjectId"])] = str(item["OriginalProjectObjectId"])
+        #     baselnResp = client.service.ReadBaselineProjects(Field=["Name", "OriginalProjectObjectId", "ObjectId"])    
+        #     baselineProjs = {}
+        #     baselineOIDs = {}
+        #     for item in baselnResp:            
+        #         #baselineProjs[str(item["OriginalProjectObjectId"])] = item["Name"]+ "(" + str(item["ObjectId"]) + ")"
+        #         # store baseline proj name with OID
+        #         baselineProjs[str(item["ObjectId"])] = item["Name"]+ "(" + str(item["ObjectId"]) + ")"
+        #         # store baseline proj ID and master Proj ID
+        #         baselineOIDs[str(item["ObjectId"])] = str(item["OriginalProjectObjectId"])
                 
-            #arcpy.AddMessage(baselineOIDs)
+        #     #arcpy.AddMessage(baselineOIDs)
 
         projoids = []
         for masterProjOID in projs:
@@ -1533,19 +1504,19 @@ class P6IntegTool(object):
                         title = [x for x in c if 'Title' == x.tag.split("}")[-1].strip()][0].text
                         udfFlds.append(title)
 
-        else: # read from EPPM Server
+        # else: # read from EPPM Server
 
-            url = hostname + "/services/UDFTypeService?wsdl"
-            client = Client(url, wsse=UsernameToken(username, password))
+        #     url = hostname + "/services/UDFTypeService?wsdl"
+        #     client = Client(url, wsse=UsernameToken(username, password))
             
-            filter = "SubjectArea='" + filterType + "'"       
+        #     filter = "SubjectArea='" + filterType + "'"       
             
-            resp = client.service.ReadUDFTypes(Field=["Title", "DataType"], Filter=filter)  
+        #     resp = client.service.ReadUDFTypes(Field=["Title", "DataType"], Filter=filter)  
             
-            # all metadata fields for UDF are retrieved even though only 'Title' is specified
-            for item in resp:
-                udfFlds.append(item["Title"])
-                # arcpy.AddMessage(item)
+        #     # all metadata fields for UDF are retrieved even though only 'Title' is specified
+        #     for item in resp:
+        #         udfFlds.append(item["Title"])
+        #         # arcpy.AddMessage(item)
         return udfFlds
 
 
@@ -3178,7 +3149,7 @@ class ExcelTool(object):
 
         # Get P6 excel schedule
         param0 = arcpy.Parameter(
-            displayName="Schedule Excel File",
+            displayName="Schedule File",
             name="schedule_path",
             datatype="DEFile",
             parameterType="Required",
@@ -3223,7 +3194,7 @@ class ExcelTool(object):
             displayName="Schedule Date Fields", 
             name="date_fields", 
             datatype="GPValueTable",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input",
             multiValue=True)
         param4.columns = [['GPString', 'Statistic Type']]
@@ -3235,9 +3206,8 @@ class ExcelTool(object):
             displayName="Date Format String",
             name="date_format",
             datatype="GPString",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
-        param5.value = "%d-%b-%y"
         params.append(param5)
 
         # Get hosted feature service title
@@ -3341,9 +3311,6 @@ class ExcelTool(object):
                 if not (col[0].isalpha() or col[0]=='_'):
                     parameters[0].setErrorMessage(f"Error: Column {col} starts with an invalid character. Please change the column to start with a letter.")
 
-        if not (parameters[4].value and len(parameters[4].value) > 0 and len(parameters[4].value[0]) > 0):
-            parameters[4].setErrorMessage("Please select the date type fields.")
-
         # Validate Table name
         if parameters[7].valueAsText:
             if not parameters[7].valueAsText.replace("_","").isalnum():
@@ -3376,7 +3343,7 @@ class ExcelTool(object):
             "p6link_field":parameters[1].valueAsText,
             "feat_class":parameters[2].valueAsText,
             "fc_link_field":parameters[3].valueAsText,
-            "date_fields":set() if len(parameters[4].value) == 0 else set([x[0] for x in parameters[4].value]),
+            "date_fields": set() if not (parameters[4].value) or len(parameters[4].value) == 0 else set([x[0] for x in parameters[4].value]),
             "date_format":parameters[5].valueAsText,
             "title":parameters[6].valueAsText,
             "table_name":parameters[7].valueAsText,
@@ -3495,7 +3462,7 @@ class CsvTool(object):
 
         # Get P6 excel schedule
         param0 = arcpy.Parameter(
-            displayName="Schedule CSV File",
+            displayName="Schedule File",
             name="schedule_path",
             datatype="DEFile",
             parameterType="Required",
@@ -3540,7 +3507,7 @@ class CsvTool(object):
             displayName="Schedule Date Fields", 
             name="date_fields", 
             datatype="GPValueTable",
-            parameterType="Required", 
+            parameterType="Optional", 
             direction="Input",
             multiValue=True)
         param4.columns = [['GPString', 'Statistic Type']]
@@ -3552,9 +3519,8 @@ class CsvTool(object):
             displayName="Date Format String",
             name="date_format",
             datatype="GPString",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
-        param5.value = "%d-%b-%y"
         params.append(param5)
 
         # Get hosted feature service title
@@ -3658,9 +3624,6 @@ class CsvTool(object):
                 if not (col[0].isalpha() or col[0]=='_'):
                     parameters[0].setErrorMessage(f"Error: Column {col} starts with an invalid character. Please change the column to start with a letter.")
 
-        if not (parameters[4].value and len(parameters[4].value) > 0 and len(parameters[4].value[0]) > 0):
-            parameters[4].setErrorMessage("Please select the date type fields.")
-
         # Validate Table name
         if parameters[7].valueAsText:
             if not parameters[7].valueAsText.replace("_","").isalnum():
@@ -3693,7 +3656,7 @@ class CsvTool(object):
             "p6link_field":parameters[1].valueAsText,
             "feat_class":parameters[2].valueAsText,
             "fc_link_field":parameters[3].valueAsText,
-            "date_fields":set() if len(parameters[4].value) == 0 else set([x[0] for x in parameters[4].value]),
+            "date_fields": set() if not (parameters[4].value) or len(parameters[4].value) == 0 else set([x[0] for x in parameters[4].value]),
             "date_format":parameters[5].valueAsText,
             "title":parameters[6].valueAsText,
             "table_name":parameters[7].valueAsText,
@@ -3865,14 +3828,18 @@ def createRelateOrJoin(table_path, target_fc_path, rel_path, scheduleLinkFld, fc
                 newName = f.name[:28] + schedule
             if len(newAlias) > 30:
                 newAlias = f.aliasName[:28] + schedule
-            arcpy.AlterField_management(
-                in_table=table_path, 
-                field=f.name, 
-                new_field_name=newName
-                )
-        p6LinkFld = p6LinkFld + schedule
-        if len(p6LinkFld) > 30:
-            p6LinkFld = p6LinkFld[:28] + schedule
+            # Check if field already exists
+            names = set([x.name for x in arcpy.ListFields(table_path)])
+            if newName not in names:
+                arcpy.AlterField_management(
+                    in_table=table_path, 
+                    field=f.name, 
+                    new_field_name=newName
+                    )
+        # Get new link field
+        scheduleLinkFld = scheduleLinkFld + schedule
+        if len(scheduleLinkFld) > 30:
+            scheduleLinkFld = scheduleLinkFld[:28] + schedule
         arcpy.AddMessage("Table field names updated with _s ending.")
 
         keepFields = []
@@ -3979,7 +3946,7 @@ def validatePublishedTable(n_table_rows_source: int, published_item):
     if n_table_rows_source == n_table_rows_published:
         arcpy.AddMessage(f"All {n_table_rows_published} rows have been successfully published.")
     else:
-        arcpy.AddWarning(f"Not all table rows have been published. We have {n_table_rows_source - n_table_rows_published} missing rows.")
+        arcpy.AddWarning(f"Not all table rows have been published. We have {abs(n_table_rows_source - n_table_rows_published)} missing rows.")
     return
 
 
@@ -3996,7 +3963,7 @@ def validatePublishedFeatureClass(source_fc_path: str, published_item):
     if n_fc_rows_source == n_fs_rows_published:
         arcpy.AddMessage(f"All {n_fs_rows_published} features have been successfully published.")
     else:
-        arcpy.AddWarning(f"Not all featues have been published. We have {n_fc_rows_source - n_fs_rows_published} missing features.")
+        arcpy.AddWarning(f"Not all featues have been published. We have {abs(n_fc_rows_source - n_fs_rows_published)} missing features.")
     arcpy.AddMessage("Validation complete.")
     return
 
