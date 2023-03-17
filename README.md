@@ -47,20 +47,168 @@ Here we provide three ArcGIS Pro tools, one for each of three data sources. The 
 * Supports the creation of schedule tables from the P6 Project, Activity, and WBS subject areas.
 * Supports the joining of the schedule table and a feature class. The join is best when you have a one-to-one type join. 
 * Supports the creations of a relationship class between the schedule table and feature class. The relationship is best when you do not have a one-to-one relationship.
+* Supports grouping date columns. When grouping is applied using a source schedule column two new columns are added to the feature class: one for the earliest assocated date and another for the latest assocated date. Grouping by date is an important workflow when we want to time enable a feature class.
+* Supports grouping by classification columns. When grouping is applied using a source classification column a new column is added to the feature class for every unique value that exists in the specified column. Under each column the value will specify if the feature has any linked table row with the column category. Grouping by classification is an important workflow when we want to symbolize by a categories. 
 
 
 
 ## Instructions
 
-1. Clone the repo to a local directory
-2. Navigate to the subdiretory for the workflow you would like to use. The proper workflow will depend on your schedule data source.
-3. Read the Readme located in the sub directory for your workflow and follow the rest of the instructions there.
+Instructions are provided for each of the tools.
 
+### Sync CSV Schedule Instructions
+
+#### CSV Schedule and Feature Class Data Preparation
+
+We have two imporant inputs to our tool. First, we have the CSV schedule file. Second, we have an Esri feature class, which contains our spatial geometry such as points, polylines, or polygons. 
+
+1. Give each feature class feature a unique ID. Let us call this our `geo_id`. Add a text column to your feature class and popuplate all rows. No two rows can have the same value, otherwise we will not be able to differentiate between those two features. 
+2. Add a text column to your schedule. For each item in your scedule specifiy one `geo_id`. The `geo_id` will be the value that links our schedule to our features. 
+3. Export or save your schedule data to a CSV file. The first row of the file must be the field names. The second row must be the field alias names. The values start on the third row. Make note of the file path location. You will be providing the CSV file location as one of the tool inputs.
+4. Take note of any datetime fields. You have the option to import these fields as the Esri datetime datatype. To do the conversion you must provide the datetime source format using the Python datetime format string convention. [See the documentation about creating your Python datetime format string here](https://docs.python.org/3/library/datetime.html). Make note of your optional format string to use as one of the tool inputs.
+
+#### Sync CSV Schedule Tool Inputs
+
+**Schedule File:** Provide the path to your CSV file. Use the file browser to select your CSV schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for Table field names. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
+
+**Schedule Link Field:** Select the field in your schedule used to link the schedule table to the feature class feature. 
+
+**Feature Class:** Provide the pat to your feature class.
+
+**Feature Class Link Field:** Select the field in your feature class used to link the schedule table to the feature class feature. 
+
+**Schedule Date Fields:** Select the fields you would like to be the Esri datetime datatype. 
+
+**Date Format String:** Provide the datetime format string for any date fields. See the Python documentation on datetime formatting strings [here](https://docs.python.org/3/library/datetime.html).
+
+**Hosted Feature Service Title:** Provide the title for the feature service to be published to your ArcGIS Enterprise or ArcGIS Online organization.
+
+**Schedule Table Name:** Provide the name to be used for your published table. The name must follow the conventions for a geodatabase table name. 
+
+**Geodatabase Name:** Provide the name to be used for your published geodatabase. The name must follow the conventions for a geodatabase name.
+
+**Folder:** Provide the folder where the published content will be published to or updated in. 
+
+**Tag:** Provide the tag used to label the published content.
+
+**Select Relate or Join:** Choose the relate or join option for the published content. Join is used when you have one schedule row for each one feature. More commonly people use the relate option, which is used for all other situations.  
+
+
+#### Using the Sync CSV Schedule Tool
+
+1. Clone the repo to a local directory accessable by ArcGIS Pro.
+2. Open ArcGIS Pro.
+3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
+4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
+5. Open the Sync CSV Schedule tool.
+6. Populate the tool input values and run the tool. You can also use ArcGIS Pro to schedule the running of the tool to automate your update process. See the documentation on tool scheduling [here](https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/basics/schedule-geoprocessing-tools.htm).
+
+
+
+### Sync Excel Schedule Instructions
+
+#### Excel Schedule and Feature Class Data Preparation
+
+We have two imporant inputs to our tool. First, we have the Excel schedule file. Second, we have an Esri feature class, which contains our spatial geometry such as points, polylines, or polygons. 
+
+1. Give each feature class feature a unique ID. Let us call this our `geo_id`. Add a text column to your feature class and popuplate all rows. No two rows can have the same value, otherwise we will not be able to differentiate between those two features. 
+2. Add a text column to your schedule. For each item in your scedule specifiy one `geo_id`. The `geo_id` will be the value that links our schedule to our features. 
+3. Export or save your schedule data to an Excel file. The schedule must be on the first Worksheet. The first row of the file must be the field names. The second row must be the field alias names. The values start on the third row. Make note of the file path location. You will be providing the Excel file location as one of the tool inputs.
+4. Take note of any datetime fields. You have the option to import these fields as the Esri datetime datatype. To do the conversion you must provide the datetime source format using the Python datetime format string convention. Please note Excel will display a date format different from the data saved to the Excel file. You must provide the format of the date saved to the Excel file. One solution is to convert your Excel date columns to text columns so you can see and control the actual date format. [See the documentation about creating your Python datetime format string here](https://docs.python.org/3/library/datetime.html). Make note of your optional format string to use as one of the tool inputs.
+
+#### Sync Excel Schedule Tool Inputs
+
+**Schedule File:** Provide the path to your Excel file. Use the file browser to select your Excel schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for Table field names. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
+
+**Schedule Link Field:** Select the field in your schedule used to link the schedule table to the feature class feature. 
+
+**Feature Class:** Provide the pat to your feature class.
+
+**Feature Class Link Field:** Select the field in your feature class used to link the schedule table to the feature class feature. 
+
+**Schedule Date Fields:** Select the fields you would like to be the Esri datetime datatype. No input is required if you do not want to make this conversion.
+
+**Date Format String:** Provide the datetime format string for any date fields. See the Python documentation on datetime formatting strings [here](https://docs.python.org/3/library/datetime.html). No input is required if you do not want to make this conversion.
+
+**Hosted Feature Service Title:** Provide the title for the feature service to be published to your ArcGIS Enterprise or ArcGIS Online organization.
+
+**Schedule Table Name:** Provide the name to be used for your published table. The name must follow the conventions for a geodatabase table name. 
+
+**Geodatabase Name:** Provide the name to be used for your published geodatabase. The name must follow the conventions for a geodatabase name.
+
+**Folder:** Provide the folder where the published content will be published to or updated in. 
+
+**Tag:** Provide the tag used to label the published content.
+
+**Select Relate or Join:** Choose the relate or join option for the published content. Join is used when you have one schedule row for each one feature. More commonly people use the relate option, which is used for all other situations.  
+
+
+#### Using the Sync Excel Schedule Tool
+
+1. Clone the repo to a local directory accessable by ArcGIS Pro.
+2. Open ArcGIS Pro.
+3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
+4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
+5. Open the Sync Excel Schedule tool. 
+6. Populate the tool input values and run the tool. You can also use ArcGIS Pro to schedule the running of the tool to automate your update process. See the documentation on tool scheduling [here](https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/basics/schedule-geoprocessing-tools.htm).
+
+
+
+### Sync P6 XML Schedule Instructions
+
+#### P6 XML Schedule and Feature Class Data Preparation
+
+We have two imporant inputs to our tool. First, we have the P6 XML schedule file. Second, we have an Esri feature class, which contains our spatial geometry such as points, polylines, or polygons. 
+
+1. Give each feature class feature a unique ID. Let us call this our `geo_id`. However, you can use any valid column name. Add a text column to your feature class and popuplate all rows. No two rows can have the same value, otherwise we will not be able to differentiate between those two features. 
+2. Add a text column to your schedule. For each item in your scedule specifiy one `geo_id`. The `geo_id` will be the value that links our schedule to our features. 
+3. Export or save your schedule data to a P6 XML file. Make note of the file path location. You will be providing the file location as one of the tool inputs.
+
+#### Sync P6 XML Schedule Tool Inputs
+**P6 XML File Path:** Input your file path or select the file using the file browser.
+
+**Subject Area:** Select the Project, Activity, or WBS subject area.
+
+**P6 Project:** Select the project you would like to import activities or WBS from. If you select a subject area other than Project this input will become available. When you select the projects subject area this field is not needed as you will be importing all your projects. 
+
+**Standard Fields:** Select the standard fields you want to import.
+
+**User Defined Fields:** Select the user defined fields you would like to import. 
+
+**Include Activity Codes:** Check this box to import all Activity Code columns. This option is only relevant and available when using the actvity subject area.  
+
+**P6 Link Field:** Select the schedule field you created to link your schedule to the feature class features.
+
+**Feature Class:** Select your source feature class. 
+
+**Feature Class Link Field:** Select the feature class field you created to link your features to the schedule rows.
+
+**Join Option:** Select the join or relate option. Join is used for one-to-one where there is only one schedule row for each feature row. This is common for projects where each project has only one location. Otherwise we use the relate option. The relate option allows us to have many schedule rows for each feature class row. For example if at each location we have series of activies taking place, then want to use a relate.
+
+**Date Fields To Group:** Select the date fields you would like to group.
+
+**Category Fields To Group:** Select the categorical fields you would like to group by.
+
+**Hosted Feature Service Title:** Provide a title for your hosted feature service. When publishing a new hosted feature service ensure the name you use is unique. When updating an existing hosted feature service the name provide must exactly match the eisting hosted feature service name.
+
+**Folder:** Provide the folder name to use.
+
+**Tag:** Provide a tag to make your hosted feature service easy to find on your ArcGIS Enterprise or ArcGIS Online organization. 
+
+
+#### Using the Sync P6 XML Schedule Tool
+
+1. Clone the repo to a local directory accessable by ArcGIS Pro.
+2. Open ArcGIS Pro.
+3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
+4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
+5. Open the Sync P6 XML Schedule tool. 
+6. Populate the tool input values and run the tool. You can also use ArcGIS Pro to schedule the running of the tool to automate your update process. See the documentation on tool scheduling [here](https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/basics/schedule-geoprocessing-tools.htm).
 
 
 ## Requirements
 
-* ArcGIS Pro the application used to run many of the automation tools
+* The newest version of ArcGIS Pro, which is the application used to run the tools
 * ArcGIS Online or ArcGIS Enterprise organization where the content will be published
 * ArcGIS Online or ArcGIS Enterprise user with user type and role, which will allow running the ArcGIS Pro tools and publishing the content
 
@@ -81,6 +229,18 @@ Find a bug or want to request a new feature? Please let us know by submitting an
 ## Contributing
 
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
+
+## Contributors
+
+
+
+| Name                   | Email              |
+| ---------------------- | ------------------ |
+| Justin Snider          | jsnider@esri.com   |
+| Omar De La Riva        | ODeLaRiva@esri.com |
+| Rafael Lucero          | rlucero@esri.com   |
+| Shiori Sasaki          | ssasaki@esri.com   |
+| Lakshmidevi Kedharnath |                    |
 
 
 

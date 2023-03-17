@@ -113,7 +113,7 @@ class P6IntegTool(object):
         params.append(param5)
         
         param6 = arcpy.Parameter( 
-            displayName="P6 Projects", 
+            displayName="P6 Project", 
             name="p6_projects", 
             datatype="GPString",
             parameterType="Optional", 
@@ -145,7 +145,7 @@ class P6IntegTool(object):
         params.append(param8)
 
         param9 = arcpy.Parameter ( 
-            displayName="Include Project/Activity Codes", 
+            displayName="Include Activity Codes", 
             name="p6_codes", 
             datatype="GPBoolean",
             parameterType="Optional", 
@@ -261,6 +261,7 @@ class P6IntegTool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
+        param19.category = "Publishing"
         params.append(param19)
 
         # Get folder
@@ -270,6 +271,7 @@ class P6IntegTool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
+        param20.category = "Publishing"
         param20.value = "schedule_sync"
         params.append(param20)
 
@@ -280,6 +282,7 @@ class P6IntegTool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
+        param21.category = "Publishing"
         param21.value = "schedule_sync"
         params.append(param21)
 
