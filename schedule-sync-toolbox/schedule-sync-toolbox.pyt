@@ -30,7 +30,7 @@ class P6IntegTool(object):
 
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Sync P6 Schedule"
+        self.label = "Sync P6 XML Schedule"
         self.description = ""
         self.canRunInBackground = False
 
