@@ -4,7 +4,7 @@ The Sync CSV Schedule Tool is engineered to enrich and publish your schedule dat
 
 ## Using the Sync CSV Schedule Tool
 
-1. Clone the repo to a local directory accessable by ArcGIS Pro.
+1. Clone the repo to a local directory accessible by ArcGIS Pro.
 2. Open ArcGIS Pro.
 3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
 4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
@@ -14,7 +14,7 @@ The Sync CSV Schedule Tool is engineered to enrich and publish your schedule dat
 
 ## Sync CSV Schedule Tool Inputs
 
-**Schedule File:** Provide the path to our sample CSV file [activities.csv](activities.csv). Use the file browser to select your CSV schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for Table field names. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
+**Schedule File:** Provide the path to our sample CSV file [activities.csv](activities.csv). Use the file browser to select your CSV schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for a geodatabase table field name. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for geodatabase table field alias names.
 
 **Schedule Link Field:** Select the field in your schedule used to link the schedule table to the feature class feature. Our example workflow uses the `join_id` field.
 

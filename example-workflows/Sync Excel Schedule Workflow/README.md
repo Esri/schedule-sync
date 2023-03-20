@@ -5,7 +5,7 @@ The Sync Excel Schedule Tool requires only one step to enrich and publish your s
 
 ## Using the Sync Excel Schedule Tool
 
-1. Clone the repo to a local directory accessable by ArcGIS Pro.
+1. Clone the repo to a local directory accessible by ArcGIS Pro.
 2. Open ArcGIS Pro.
 3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
 4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
@@ -15,7 +15,7 @@ The Sync Excel Schedule Tool requires only one step to enrich and publish your s
 
 ## Sync Excel Schedule Tool Inputs
 
-**Schedule File:** Provide the path to our sample Excel file [activities.xlsx](activities.xlsx). Use the file browser to select your Excel schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for Table field names. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
+**Schedule File:** Provide the path to our sample Excel file [activities.xlsx](activities.xlsx). Use the file browser to select your Excel schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for a geodatabase table field name. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for geodatabase table field alias names.
 
 **Schedule Link Field:** Select the field in your schedule used to link the schedule table to the feature class feature. Our example workflow uses the `join_id` field.
 

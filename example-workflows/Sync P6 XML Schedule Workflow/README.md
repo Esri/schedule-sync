@@ -4,7 +4,7 @@ The Sync P6 XML Schedule Tool is engineered to enrich and publish your schedule 
 
 ## Using the Sync P6 XML Schedule Tool
 
-1. Clone the repo to a local directory accessable by ArcGIS Pro.
+1. Clone the repo to a local directory accessible by ArcGIS Pro.
 2. Open ArcGIS Pro.
 3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
 4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
