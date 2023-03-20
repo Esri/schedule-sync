@@ -10,8 +10,7 @@ Here we provide three ArcGIS Pro tools, one for each of three data sources. The 
 1. Sync Excel Schedule
 1. Sync P6 XML Schedule
 
-
-
+You can find example workflows with test data for all three tools in the [example-workflows](example-workflows) directory.
 
 ## Features
 
@@ -21,15 +20,15 @@ Here we provide three ArcGIS Pro tools, one for each of three data sources. The 
 * Creation of relationship class or join between the schedule table and a feature class using configurable link fields.
 * Publishing of a new feature service with the schedule table, and feature service with a relationship class or join. 
 * Updating of a feature service with a schedule table, feature service, and relationship class.
-* Autodetection of existing feature service. If the feature service does not exist we publish, otherwise we update.
+* Autodetection of existing feature service. If the feature service does not exist, we publish, otherwise we update.
 
 
 
 **Sync Excel Schedule Tool Features**
 
 * Support for reading Excel schedule files and creation of a schedule feature table. It is assumed the schedule is in the first worksheet. See the example [activities.xlsx](./data/activities.xlsx) for a template to follow.
-* Support for pulling the field names from the Excel worksheet. The field names must be provided on the first row of the spreadsheet.
-* Support for the input of display friendly, alias field names. The alias names must be provided on the second row of the spreadsheet.
+* Support for pulling the field names from the worksheet. The field names must be provided on the first row of the worksheet.
+* Support for the input of display-friendly, alias field names. The alias names must be provided on the second row of the worksheet.
 
 
 
@@ -37,17 +36,17 @@ Here we provide three ArcGIS Pro tools, one for each of three data sources. The 
 
 * Support for reading CSV schedule files and creation of a schedule feature table. See the example [activities.csv](./data/activities.csv) for a template to follow.
 * Support for pulling the field names from the CSV file. The field names must be provided on the first row.
-* Support for the input of display friendly, alias field names. The alias names must be provided on the second row.
+* Support for the input of display-friendly, alias field names. The alias names must be provided on the second row.
 
 
 
 **Sync P6 XML Schedule Tool Features**
 
-* Support using data P6 XML files. P6 XML files can be exported from Primavera Cloud, Primavera P6 EPPM Servers, and Primavera P6 Professional.
+* Support using data Oracle P6 XML files. P6 XML files can be exported from Primavera Cloud, Primavera P6 EPPM Servers, and Primavera P6 Professional.
 * Supports the creation of schedule tables from the P6 Project, Activity, and WBS subject areas.
 * Supports the joining of the schedule table and a feature class. The join is best when you have a one-to-one type join. 
 * Supports the creations of a relationship class between the schedule table and feature class. The relationship is best when you do not have a one-to-one relationship.
-* Supports grouping date columns. When grouping is applied using a source schedule column two new columns are added to the feature class: one for the earliest assocated date and another for the latest assocated date. Grouping by date is an important workflow when we want to time enable a feature class.
+* Supports grouping date columns. When grouping is applied using a source schedule column, two new columns are added to the feature class: one for the earliest assocated date and another for the latest assocated date. Grouping by date is an important workflow when we want to time-enable a feature class.
 * Supports grouping by classification columns. When grouping is applied using a source classification column a new column is added to the feature class for every unique value that exists in the specified column. Under each column the value will specify if the feature has any linked table row with the column category. Grouping by classification is an important workflow when we want to symbolize by a categories. 
 
 
@@ -58,6 +57,8 @@ Instructions are provided for each of the tools.
 
 ### Sync CSV Schedule Instructions
 
+You can find an example workflow using this tool in [example-workflows/Sync CSV Schedule Workflow](example-workflows/Sync CSV Schedule Workflow)
+
 #### CSV Schedule and Feature Class Data Preparation
 
 We have two imporant inputs to our tool. First, we have the CSV schedule file. Second, we have an Esri feature class, which contains our spatial geometry such as points, polylines, or polygons. 
@@ -65,15 +66,15 @@ We have two imporant inputs to our tool. First, we have the CSV schedule file. S
 1. Give each feature class feature a unique ID. Let us call this our `geo_id`. Add a text column to your feature class and popuplate all rows. No two rows can have the same value, otherwise we will not be able to differentiate between those two features. 
 2. Add a text column to your schedule. For each item in your scedule specifiy one `geo_id`. The `geo_id` will be the value that links our schedule to our features. 
 3. Export or save your schedule data to a CSV file. The first row of the file must be the field names. The second row must be the field alias names. The values start on the third row. Make note of the file path location. You will be providing the CSV file location as one of the tool inputs.
-4. Take note of any datetime fields. You have the option to import these fields as the Esri datetime datatype. To do the conversion you must provide the datetime source format using the Python datetime format string convention. [See the documentation about creating your Python datetime format string here](https://docs.python.org/3/library/datetime.html). Make note of your optional format string to use as one of the tool inputs.
+4. Take note of any datetime fields. You have the option to import these fields as the Esri datetime datatype. To do the conversion you must provide the datetime source format using the Python datetime format string convention. See the documentation about creating your Python datetime format string [here](https://docs.python.org/3/library/datetime.html). Make note of your optional format string to use as one of the tool inputs.
 
 #### Sync CSV Schedule Tool Inputs
 
-**Schedule File:** Provide the path to your CSV file. Use the file browser to select your CSV schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for Table field names. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
+**Schedule File:** Provide the path to your CSV file. Use the file browser to select your CSV schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for geodatabase table field names. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
 
 **Schedule Link Field:** Select the field in your schedule used to link the schedule table to the feature class feature. 
 
-**Feature Class:** Provide the pat to your feature class.
+**Feature Class:** Provide the path to your feature class.
 
 **Feature Class Link Field:** Select the field in your feature class used to link the schedule table to the feature class feature. 
 
@@ -96,10 +97,10 @@ We have two imporant inputs to our tool. First, we have the CSV schedule file. S
 
 #### Using the Sync CSV Schedule Tool
 
-1. Clone the repo to a local directory accessable by ArcGIS Pro.
+1. Clone the repo to a local directory accessible by ArcGIS Pro.
 2. Open ArcGIS Pro.
-3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
-4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
+3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. See documentation [here](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm).
+4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. See documentation [here](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm).
 5. Open the Sync CSV Schedule tool.
 6. Populate the tool input values and run the tool. You can also use ArcGIS Pro to schedule the running of the tool to automate your update process. See the documentation on tool scheduling [here](https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/basics/schedule-geoprocessing-tools.htm).
 
@@ -107,22 +108,24 @@ We have two imporant inputs to our tool. First, we have the CSV schedule file. S
 
 ### Sync Excel Schedule Instructions
 
+You can find an example workflow using this tool in [example-workflows/Sync Excel Schedule Workflow](example-workflows/Sync Excel Schedule Workflow)
+
 #### Excel Schedule and Feature Class Data Preparation
 
 We have two imporant inputs to our tool. First, we have the Excel schedule file. Second, we have an Esri feature class, which contains our spatial geometry such as points, polylines, or polygons. 
 
 1. Give each feature class feature a unique ID. Let us call this our `geo_id`. Add a text column to your feature class and popuplate all rows. No two rows can have the same value, otherwise we will not be able to differentiate between those two features. 
 2. Add a text column to your schedule. For each item in your scedule specifiy one `geo_id`. The `geo_id` will be the value that links our schedule to our features. 
-3. Export or save your schedule data to an Excel file. The schedule must be on the first Worksheet. The first row of the file must be the field names. The second row must be the field alias names. The values start on the third row. Make note of the file path location. You will be providing the Excel file location as one of the tool inputs.
+3. Export or save your schedule data to an Excel file. The schedule must be on the first worksheet. The first row of the file must be the field names. The second row must be the field alias names. The values start on the third row. Make note of the file path location. You will be providing the Excel file location as one of the tool inputs.
 4. Take note of any datetime fields. You have the option to import these fields as the Esri datetime datatype. To do the conversion you must provide the datetime source format using the Python datetime format string convention. Please note Excel will display a date format different from the data saved to the Excel file. You must provide the format of the date saved to the Excel file. One solution is to convert your Excel date columns to text columns so you can see and control the actual date format. [See the documentation about creating your Python datetime format string here](https://docs.python.org/3/library/datetime.html). Make note of your optional format string to use as one of the tool inputs.
 
 #### Sync Excel Schedule Tool Inputs
 
-**Schedule File:** Provide the path to your Excel file. Use the file browser to select your Excel schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for Table field names. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
+**Schedule File:** Provide the path to your Excel file. Use the file browser to select your Excel schedule file. The first row of values in the file will be used as the field names. The field name values must follow all the standard requirements for a geodatabase table field name. The second row of the values in the file will be used as the alias names. The alias names must follow all the standard requirements for Table alias names.
 
 **Schedule Link Field:** Select the field in your schedule used to link the schedule table to the feature class feature. 
 
-**Feature Class:** Provide the pat to your feature class.
+**Feature Class:** Provide the path to your feature class.
 
 **Feature Class Link Field:** Select the field in your feature class used to link the schedule table to the feature class feature. 
 
@@ -145,7 +148,7 @@ We have two imporant inputs to our tool. First, we have the Excel schedule file.
 
 #### Using the Sync Excel Schedule Tool
 
-1. Clone the repo to a local directory accessable by ArcGIS Pro.
+1. Clone the repo to a local directory accessible by ArcGIS Pro.
 2. Open ArcGIS Pro.
 3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
 4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
@@ -155,6 +158,8 @@ We have two imporant inputs to our tool. First, we have the Excel schedule file.
 
 
 ### Sync P6 XML Schedule Instructions
+
+You can find an example workflow using this tool in [example-workflows/Sync P6 XML Schedule Workflow](example-workflows/Sync P6 XML Schedule Workflow)
 
 #### P6 XML Schedule and Feature Class Data Preparation
 
@@ -169,11 +174,11 @@ We have two imporant inputs to our tool. First, we have the P6 XML schedule file
 
 **Subject Area:** Select the Project, Activity, or WBS subject area.
 
-**P6 Project:** Select the project you would like to import activities or WBS from. If you select a subject area other than Project this input will become available. When you select the projects subject area this field is not needed as you will be importing all your projects. 
+**P6 Project:** Select the project you would like to import activities or WBS from. If you select a subject area other than Project this input will become available. When you select the project's subject area this field is not needed as you will be importing all your projects. 
 
 **Standard Fields:** Select the standard fields you want to import.
 
-**User Defined Fields:** Select the user defined fields you would like to import. 
+**User Defined Fields:** Select the user-defined fields you would like to import. 
 
 **Include Activity Codes:** Check this box to import all Activity Code columns. This option is only relevant and available when using the actvity subject area.  
 
@@ -198,7 +203,7 @@ We have two imporant inputs to our tool. First, we have the P6 XML schedule file
 
 #### Using the Sync P6 XML Schedule Tool
 
-1. Clone the repo to a local directory accessable by ArcGIS Pro.
+1. Clone the repo to a local directory accessible by ArcGIS Pro.
 2. Open ArcGIS Pro.
 3. Sign into your ArcGIS Enterprise or ArcGIS Online organization. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/sign-in-to-your-organization.htm)
 4. Open the `schedule-sync-toolbox.pyt` in ArcGIS Pro. [Documentation](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm)
@@ -208,7 +213,7 @@ We have two imporant inputs to our tool. First, we have the P6 XML schedule file
 
 ## Requirements
 
-* The newest version of ArcGIS Pro, which is the application used to run the tools
+* The newest version of ArcGIS Pro, which is the application used to run the tools. The tool has been tested using ArcGIS Pro 3.1.0.
 * ArcGIS Online or ArcGIS Enterprise organization where the content will be published
 * ArcGIS Online or ArcGIS Enterprise user with user type and role, which will allow running the ArcGIS Pro tools and publishing the content
 
