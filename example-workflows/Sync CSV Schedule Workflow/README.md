@@ -24,7 +24,7 @@ The Sync CSV Schedule Tool is engineered to enrich and publish your schedule dat
 
 **Schedule Date Fields:** Select the fields you would like to be the Esri datetime datatype. Our example workflow uses the `start_date` field.
 
-**Date Format String:** Provide the datetime format string `%m/%d/%y`. See the Python documentation on datetime formatting strings [here](https://docs.python.org/3/library/datetime.html).
+**Date Format String:** Provide the datetime format string `%m/%d/%Y`. See the Python documentation on datetime formatting strings [here](https://docs.python.org/3/library/datetime.html).
 
 **Hosted Feature Service Title:** Provide the title `Bloomington Powerline Project` for the feature service to be published to your ArcGIS Enterprise or ArcGIS Online organization.
 

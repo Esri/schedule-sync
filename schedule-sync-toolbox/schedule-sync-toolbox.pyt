@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+
 import os
 import pandas as pd
 from pathlib import Path
@@ -13,7 +13,7 @@ import arcpy
 import xml.etree.ElementTree as ET
 # from zeep import Client
 # from zeep.wsse.username import UsernameToken
-
+import datetime
 
 class Toolbox(object):
     def __init__(self):
@@ -3003,7 +3003,7 @@ class P6IntegTool(object):
         elif d_type == "Double":
             value = float(value)
         elif d_type == "Date":
-            value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
+            value = datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
         return value
 
 
@@ -3729,13 +3729,20 @@ class CsvTool(object):
             arcpy.AddMessage("All table alias names have been set.")
 
             for col in date_cols:
+                new_name = col + '_date'
+                if new_name in set([f.name for f in arcpy.ListFields(table_path)]):
+                    arcpy.AddMessage(f"Field name {new_name} alread exists. Removing.")
+                    arcpy.DeleteField_management(table_path, [new_name])
                 arcpy.ConvertTimeField_management(in_table=table_path, 
                                                 input_time_field=col, 
                                                 input_time_format='unix_ms', 
                                                 output_time_field=col+'_date', 
                                                 output_time_format='DATE')
+                
                 arcpy.DeleteField_management(table_path, [col])
                 arcpy.AlterField_management(table_path, col+'_date', col, col)
+                arcpy.AddMessage(f"Created field name {new_name}")
+                
             arcpy.AddMessage("Table date columns converted to the Esri datetime format.")
 
             arcpy.FeatureClassToFeatureClass_conversion(params["feat_class"], 
