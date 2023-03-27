@@ -32,7 +32,7 @@ The Sync CSV Schedule Tool is engineered to enrich and publish your schedule dat
 
 **Geodatabase Name:** Provide the name `bloomington.gdb` to be used for your published geodatabase. The name must follow the conventions for a geodatabase name.
 
-**Folder:** Provide the folder name `schedule_sync` where the published content will be published to or updated in. 
+**Folder:** Provide the folder name `schedule_sync_csv` where the published content will be published to or updated in. 
 
 **Tag:** Provide the tag `schedule_sync` used to label the published content.
 

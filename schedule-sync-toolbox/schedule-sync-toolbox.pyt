@@ -414,7 +414,6 @@ class P6IntegTool(object):
 
     def execute(self, parameters, messages):
         """The source code of the tool."""
-
         with tempfile.TemporaryDirectory() as path:
             arcpy.AddMessage("Temporary directory created.")
 
@@ -438,7 +437,7 @@ class P6IntegTool(object):
             arcpy.SetProgressorLabel("Creating temp gdb...")
             arcpy.CreateFileGDB_management(path, temp_gdb)
             out_gdb_path = os.path.join(path, temp_gdb)
-            arcpy.env.workspace = out_gdb_path
+            # arcpy.env.workspace = out_gdb_path
 
             p6_table = "p6table_{}".format(fc_name)
             # p6_table = cleanName(p6_table)
@@ -620,7 +619,15 @@ class P6IntegTool(object):
             
             arcpy.AddMessage("Tool complete")
             arcpy.SetProgressorPosition() 
-
+            arcpy.AddMessage("Start cleanup")
+            try:
+                arcpy.management.Delete(table_path)
+                arcpy.management.Delete(fc_path)
+                arcpy.management.Delete(fc_path)
+                arcpy.management.Delete(out_gdb_path)
+                arcpy.AddMessage("Temp file cleanup complete.")
+            except:
+                arcpy.AddMessage("System did not allow file cleanup.")
         return
 
 
