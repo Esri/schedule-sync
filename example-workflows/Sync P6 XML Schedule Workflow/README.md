@@ -38,7 +38,7 @@ The Sync P6 XML Schedule Tool is engineered to enrich and publish your schedule 
 
 **Category Fields To Group:** We skip this optional input.
 
-**Hosted Feature Service Title:** Provide the title `Bloomfield_Powerlines` for your hosted feature service. When publishing a new hosted feature service ensure the name you use is unique. When updating an existing hosted feature service the name provide must exactly match the eisting hosted feature service name.
+**Hosted Feature Service Title:** Provide the title `Bloomfield_Powerlines_XML` for your hosted feature service. When publishing a new hosted feature service ensure the name you use is unique. When updating an existing hosted feature service the name provide must exactly match the eisting hosted feature service name.
 
 **Folder:** Provide the folder name `schedule_sync_xml` where the published content will be published to or updated in. 
 
