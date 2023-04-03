@@ -1,8 +1,12 @@
 # schedule-sync
 
-Schedules are inherently spatial. However, schedules often do not contain a spatial component. In addition, schedules are continually changing and time specific. The schedule-sync repository gives you a series of tools to sync your schedule data to your ArcGIS Enterprise or ArcGIS Online account. 
+Schedules are inherently spatial. However, schedules often do not contain a spatial component. In addition, schedules are continually changing and time specific. The schedule-sync repository gives you a series of workflows to sync your schedule data to your ArcGIS Enterprise or ArcGIS Online account. The workflows are powered by a set of ArcGIS Pro tools. 
 
-You will now be able to plainly see the spatial nature of your schedule. By running these automated workflows you can automatically keep your published schedule data up-to-date. Date datatypes are preserved so your published layers can be time-enabled allowing all the Esri time-enabled functionality. 
+![Schedule Sync Toolbox](./media/toolbox.png)
+
+Using the schedule sync workflows you will now be able to plainly see the spatial nature of your schedule. By running these automated workflows you can automatically keep your published schedule data up-to-date. Date datatypes are preserved so your published layers can be time-enabled allowing all the Esri time-enabled functionality. 
+
+![Project Dashboard](./media/projectDash01.png)
 
 Here we provide three ArcGIS Pro tools, one for each of three data sources. The best workflow for you will depend on the source of your schedule data. Inside the schedule-sync-toolbox you will find the following tools:
 
@@ -11,6 +15,8 @@ Here we provide three ArcGIS Pro tools, one for each of three data sources. The 
 1. Sync P6 XML Schedule
 
 You can find example workflows with test data for all three tools in the [example-workflows](example-workflows) directory.
+
+![Schedule Sync Tools](./media/tools.png)
 
 ## Features
 
@@ -46,7 +52,7 @@ You can find example workflows with test data for all three tools in the [exampl
 * Supports the creation of schedule tables from the P6 Project, Activity, and WBS subject areas.
 * Supports the joining of the schedule table and a feature class. The join is best when you have a one-to-one type join. 
 * Supports the creations of a relationship class between the schedule table and feature class. The relationship is best when you do not have a one-to-one relationship.
-* Supports grouping date columns. When grouping is applied using a source schedule column, two new columns are added to the feature class: one for the earliest assocated date and another for the latest assocated date. Grouping by date is an important workflow when we want to time-enable a feature class.
+* Supports grouping date columns. When grouping is applied using a source schedule column, two new columns are added to the feature class: one for the earliest associated date and another for the latest associated date. Grouping by date is an important workflow when we want to time-enable a feature class.
 * Supports grouping by classification columns. When grouping is applied using a source classification column a new column is added to the feature class for every unique value that exists in the specified column. Under each column the value will specify if the feature has any linked table row with the column category. Grouping by classification is an important workflow when we want to symbolize by a categories. 
 
 
