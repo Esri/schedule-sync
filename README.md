@@ -222,6 +222,7 @@ We have two imporant inputs to our tool. First, we have the P6 XML schedule file
 * The newest version of ArcGIS Pro, which is the application used to run the tools. The tool has been tested using ArcGIS Pro 3.1.0.
 * ArcGIS Online or ArcGIS Enterprise organization where the content will be published
 * ArcGIS Online or ArcGIS Enterprise user with user type and role, which will allow running the ArcGIS Pro tools and publishing the content
+* The schedule-sync geoprocessing tools must be run with a Standard or Advanced license. 
 
 
 
