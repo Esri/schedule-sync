@@ -3216,7 +3216,7 @@ class ExcelTool(object):
             displayName="Date Format String",
             name="date_format",
             datatype="GPString",
-            parameterType="Optional",
+            parameterType="Required",
             direction="Input")
         params.append(param5)
 
@@ -3529,7 +3529,7 @@ class CsvTool(object):
             displayName="Date Format String",
             name="date_format",
             datatype="GPString",
-            parameterType="Optional",
+            parameterType="Required",
             direction="Input")
         params.append(param5)
 
