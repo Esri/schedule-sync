@@ -1,3 +1,7 @@
+# ⚠️ This repository is no longer maintained
+
+This project is no longer actively maintained and is provided as-is for reference purposes only. Issues and pull requests may not be monitored.
+
 # schedule-sync
 
 Schedules are inherently spatial. However, schedules often do not contain a spatial component. In addition, schedules are continually changing and time specific. The schedule-sync repository gives you a series of workflows to sync your schedule data to your ArcGIS Enterprise or ArcGIS Online account. The workflows are powered by a set of ArcGIS Pro tools. 
